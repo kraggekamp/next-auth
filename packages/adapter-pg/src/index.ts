@@ -133,9 +133,8 @@ export default function PostgresAdapter(client: Pool): Adapter {
       identifier: string
       token: string
     }): Promise<VerificationToken> {
-      const sql = `delete from verification_token
-      where identifier = $1 and token = $2
-      RETURNING identifier, expires, token `
+      const sql = `select identifier, expires, token from verification_token
+      where identifier = $1 and token = $2`
       const result = await client.query(sql, [identifier, token])
       return result.rowCount !== 0 ? result.rows[0] : null
     },
